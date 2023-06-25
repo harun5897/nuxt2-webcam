@@ -1,72 +1,82 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        nuxt2
-      </h1>
-      <h2 class="subtitle">
-        My spectacular Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+  <div class="d-flex justify-content-center">
+    <div style="width: 450px;">
+      <video v-show="!isPhotoTaken" ref="camera" autoplay></video>
+      <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas"></canvas>
+      <br>
+      <div class="d-flex justify-content-center">
+        <button v-show="isOnCamera" type="button" class="btn btn-primary" @click="stopCamera">Stop Camera</button>
+        <button v-show="!isOnCamera" type="button" class="btn btn-primary" @click="startCamera">Start Camera</button>
+        <button v-show="!isPhotoTaken" type="button" class="btn btn-warning text-white mx-2" @click="takePhoto">Take Photo</button>
+        <button v-show="isPhotoTaken" type="button" class="btn btn-success mx-2" @click="isPhotoTaken = false">Retake Photo</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
-  components: {
-    Logo
-  }
+  data() {
+    return {
+      isPhotoTaken : false,
+      isOnCamera: true,
+      width: 450,
+      height: 337.5,
+    }
+  },
+  mounted() {
+    this.startCamera()
+  },
+  methods: { 
+    startCamera() {
+      this.isOnCamera = true
+      this.isPhotoTaken = false
+      const constraints = (window.constraints = {
+				audio: false,
+				video: true
+			})
+
+			navigator.mediaDevices.getUserMedia(constraints)
+				.then(stream => {
+					this.$refs.camera.srcObject = stream
+				})
+				.catch(error => {
+					alert("May the browser didn't support or there is some errors.")
+				})
+    },
+    stopCamera() {
+      this.isOnCamera = false
+      const tracks = this.$refs.camera.srcObject.getTracks()
+
+			tracks.forEach(track => {
+				track.stop()
+			})
+    },
+    takePhoto() {
+      this.isPhotoTaken = true
+      const context = this.$refs.canvas.getContext('2d')
+      context.drawImage(this.$refs.camera, 0, 0, this.width, this.height)
+      const canvas = document.getElementById("photoTaken").toDataURL("image/jpeg")
+      const fileName = 'imageCapture.jpg'
+      this.base64ToImage(canvas, fileName)
+    },
+    base64ToImage(base64Data, fileName) {
+      const link = document.createElement('a')
+      link.href = base64Data
+      link.download = fileName
+      link.click()
+    }
+  },
 }
 </script>
-
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
+  video {
+    width: 100%;
+    height: auto;
+    background-color: red;
+  }
+  canvas {
+    width: 100%;
+    height: auto;
+  }
 </style>

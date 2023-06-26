@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex justify-content-center">
     <div style="width: 450px;">
-      <video v-show="!isPhotoTaken" ref="camera" autoplay></video>
-      <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas"></canvas>
+      <video v-show="!isPhotoTaken" ref="camera" :width="width" :height="height" autoplay></video>
+      <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas" :width="width" :height="height"></canvas>
       <br>
       <div class="d-flex justify-content-center">
         <button v-show="isOnCamera" type="button" class="btn btn-primary" @click="stopCamera">Stop Camera</button>
@@ -24,8 +24,22 @@ export default {
       height: 337.5,
     }
   },
+  computed: {
+    elementWidth() {
+      const element = this.$refs.camera
+      return element.offsetWidth
+    },
+    elementHeight() {
+      const element = this.$refs.camera
+      return element.offsetHeight
+    },
+  },
   mounted() {
     this.startCamera()
+    window.addEventListener('resize', this.handleResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: { 
     startCamera() {
@@ -65,7 +79,13 @@ export default {
       link.href = base64Data
       link.download = fileName
       link.click()
-    }
+    },
+    handleResize() {
+      this.width = this.elementWidth
+      this.height = this.elementHeight
+      console.log(this.width)
+      console.log(this.height)
+    },
   },
 }
 </script>
@@ -73,10 +93,11 @@ export default {
   video {
     width: 100%;
     height: auto;
-    background-color: red;
+    background-color: grey;
   }
   canvas {
-    width: 100%;
-    height: auto;
+    /* width: 100%;
+    height: 337.5px; */
+    max-width: 450px !important;
   }
 </style>

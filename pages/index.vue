@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-center">
-    <div style="width: 450px;">
+    <div>
       <video v-show="!isPhotoTaken" ref="camera" :width="width" :height="height" autoplay></video>
       <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas" :width="width" :height="height"></canvas>
       <br>
@@ -23,8 +23,8 @@ export default {
     return {
       isPhotoTaken : false,
       isOnCamera: true,
-      width: 450,
-      height: 337.5,
+      width: 414,
+      height: 896,
       cam: "environment",
     }
   },

@@ -24,7 +24,7 @@ export default {
       isPhotoTaken : false,
       isOnCamera: true,
       width: 414,
-      height: 896,
+      height: 450,
       cam: "environment",
     }
   },

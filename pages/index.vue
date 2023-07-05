@@ -10,6 +10,9 @@
         <button v-show="!isPhotoTaken" type="button" class="btn btn-warning text-white mx-2" @click="takePhoto">Take Photo</button>
         <button v-show="isPhotoTaken" type="button" class="btn btn-success mx-2" @click="isPhotoTaken = false">Retake Photo</button>
       </div>
+      <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-success m-2" @click="switchCam"> Switch Camera </button>
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +25,7 @@ export default {
       isOnCamera: true,
       width: 450,
       height: 337.5,
+      cam: "environment",
     }
   },
   computed: {
@@ -48,7 +52,7 @@ export default {
       const constraints = (window.constraints = {
 				audio: false,
 				video: {
-          facingMode: "environment",
+          facingMode: this.cam,
         }
 			})
 
@@ -75,6 +79,17 @@ export default {
       const canvas = document.getElementById("photoTaken").toDataURL("image/jpeg")
       const fileName = 'imageCapture.jpg'
       this.base64ToImage(canvas, fileName)
+    },
+    switchCam() {
+      if(this.cam == "environment") {
+        this.cam = "user"
+        this.stopCamera()
+        this.startCamera()
+      } else {
+        this.cam = "environment"
+        this.stopCamera()
+        this.startCamera()
+      }
     },
     base64ToImage(base64Data, fileName) {
       const link = document.createElement('a')

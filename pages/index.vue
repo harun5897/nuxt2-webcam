@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-center">
     <div>
       <video v-show="!isPhotoTaken" ref="camera" :width="width" :height="height" autoplay></video>
-      <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas" :width="414" :height="600"></canvas>
+      <canvas v-show="isPhotoTaken" id="photoTaken" ref="canvas" width="414" height="700"></canvas>
       <br>
       <div class="d-flex justify-content-center">
         <button v-show="isOnCamera" type="button" class="btn btn-primary" @click="stopCamera">Stop Camera</button>

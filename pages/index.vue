@@ -47,7 +47,9 @@ export default {
       this.isPhotoTaken = false
       const constraints = (window.constraints = {
 				audio: false,
-				video: true
+				video: {
+          facingMode: "environment",
+        }
 			})
 
 			navigator.mediaDevices.getUserMedia(constraints)
@@ -84,20 +86,20 @@ export default {
       this.width = this.elementWidth
       this.height = this.elementHeight
       console.log(this.width)
-      console.log(this.height)
+      // console.log(this.height)
     },
   },
 }
 </script>
 <style>
   video {
-    width: 100%;
+    /* width: 100%;
     height: auto;
-    background-color: grey;
+    background-color: grey; */
   }
   canvas {
     /* width: 100%;
     height: 337.5px; */
-    max-width: 450px !important;
+    /* max-width: 450px !important; */
   }
 </style>
